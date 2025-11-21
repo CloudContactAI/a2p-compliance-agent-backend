@@ -1,0 +1,607 @@
+✅ TCR/Telnyx Collections Campaign Pre-Submission Compliance Checklist (v1.0)
+Purpose: The “Collections Compliance Agent” will use this checklist to evaluate:
+	•	Brand data
+	•	Website content
+	•	Message templates
+	•	Opt-in flows
+	•	Privacy/Terms pages
+	•	URLs & domains
+	•	Tone & language
+	•	FDCPA/CFPB concerns
+	•	CTIA & TCPA compliance
+	•	TCR formatting & submission requirements
+Outcome: A binary recommendation: APPROVABLE (≥99% likelihood) or REJECTION LIKELY Plus a list of specific issues to correct.
+
+🧩 SECTION A — BRAND IDENTITY & CATEGORY REVIEW
+A1. Brand Website Review
+Agent reviews every page of the brand’s website (home, about, services, footer links).
+Must confirm:
+	•	 Website exists and loads correctly
+	•	 Website clearly identifies the brand
+	•	 Website does not use URL shorteners or redirects to suspicious pages
+	•	 Website domain matches the brand name or parent company
+	•	 Website does not mention third-party debt collection in a way that violates carrier restrictions
+	•	 Website does not imply marketing or lead generation intent
+	•	 Website does not advertise services to other businesses for outbound messaging (this triggers “aggregator” rejection)
+Auto-fail triggers:
+	•	 “Third-party debt collector” or “We collect debts on behalf of others”
+	•	 “Skip-tracing” or similar prohibited practices
+	•	 Payday loan content
+	•	 Personal loan solicitations
+	•	 Lead generation / data brokerage language
+	•	 Fintech products that imply risk (crypto, credit repair, etc.)
+	•	 Website unrelated to finance or collections (inconsistent brand)
+
+A2. Brand Category Validation
+For collections, brand must fall under allowed financial categories:
+Allowed:
+	•	 Debt servicing
+	•	 Existing account notifications
+	•	 Payment reminders
+	•	 Statement availability
+	•	 Account login access
+Not allowed:
+	•	 Marketing to generate payments (“take advantage of this offer”)
+	•	 New debt solicitations
+	•	 Loan offers
+	•	 Cross-selling or upselling
+	•	 Early-stage collection harassment tone
+	•	 Mention of “pre-legal,” “legal escalation,” etc.
+
+🧩 SECTION B — OPT-IN VALIDATION (THE #1 CAUSE OF REJECTIONS)
+B1. Opt-In Method Completeness
+Agent checks:
+	•	 Web opt-in flow described
+	•	 Opt-in checkbox language provided
+	•	 Link to opt-in page (if applicable)
+	•	 Phone/verbal opt-in script present
+	•	 Email confirmation opt-in flow fully described
+Auto-fail triggers:
+	•	 “Customers provide their number when calling in” (non-compliant)
+	•	 “We have an existing business relationship” (not enough for SMS)
+	•	 Prechecked opt-in box
+	•	 Passive consent (“by using our site, you agree…”)
+	•	 No STOP/HELP instructions in initial message
+
+B2. Opt-In Proof
+	•	 Screenshots or sample form fields provided
+	•	 Consent language visible
+	•	 Clear wording that messages are about existing accounts
+Required wording for collections:
+“I agree to receive SMS notifications regarding my existing account. Message/data rates may apply. Reply STOP to cancel.”
+
+🧩 SECTION C — MESSAGE TEMPLATE COMPLIANCE
+C1. Template Required Elements
+Every message must include:
+	•	 Brand name (no placeholders allowed)
+	•	 Purpose of message clearly stated
+	•	 STOP instructions on first message
+	•	 HELP support info available somewhere
+	•	 No marketing/promotional language
+	•	 FDCPA disclosure (for collections): “This is a communication from a debt collector.”
+
+C2. Dynamic Field Compliance
+Allowed:
+	•	 {{FirstName}}
+	•	 {{Last4}}
+	•	 {{AmountDue}}
+	•	 {{DueDate}}
+Not allowed:
+	•	 {{BrandName}}
+	•	 {{URL}}
+	•	 {{Company}}
+	•	 {{AgentName}}
+	•	 {{VariableLink}}
+
+C3. Language & Tone Audit
+Agent checks for:
+Must NOT include:
+	•	 Threatening language
+	•	 Legal escalation language
+	•	 “Urgent,” “Final Notice,” “Last Attempt”
+	•	 “We are attempting to collect…” without identifying sender
+	•	 Pressure tactics (“respond immediately”)
+	•	 Misleading statements (“important matter”)
+	•	 Loan solicitations
+	•	 Financial advice
+	•	 “Click here to prevent additional fees”
+Must include:
+	•	 Informational, factual tone
+	•	 Link to secure portal
+	•	 No request to reply with personal info
+	•	 No conversational SMS (must avoid looking like two-way negotiation)
+
+🧩 SECTION D — URL & DOMAIN VALIDATION
+D1. Domain Checks
+Agent verifies:
+	•	 All URLs resolve
+	•	 Domain is HTTPS
+	•	 No URL shorteners
+	•	 No redirects
+	•	 Domain is owned by the client brand
+	•	 Domain does not include inappropriate subdomains (e.g., unsecured login pages)
+
+D2. Portal Login Page Review
+Must confirm:
+	•	 Page is secure
+	•	 SSL certificate valid
+	•	 Page refers to existing customers only
+	•	 No language that suggests marketing
+
+🧩 SECTION E — TERMS & PRIVACY VALIDATION
+E1. Compliance pages must exist and load
+	•	 Privacy Policy URL
+	•	 Terms & Conditions URL
+	•	 Both pages present and functional
+	•	 Brand name appears on these pages
+	•	 No contradictory opt-in claims (common fail point)
+
+E2. Required Regulatory Language
+Privacy policy must include:
+	•	 How customer data is used
+	•	 How SMS preferences are managed
+	•	 How customers opt out
+	•	 No sharing with third parties for marketing
+
+🧩 SECTION F — SUPPORT & ESCALATION REQUIREMENTS
+Required:
+	•	 Support email
+	•	 Support phone number
+	•	 Hours of operation
+	•	 Must match HELP autoresponder
+
+🧩 SECTION G — TCR STRUCTURE VALIDATION
+Agent verifies that the submission form fields align with TCR formatting:
+	•	 All fields filled
+	•	 No “TBD”
+	•	 No null values
+	•	 Brand name matches legal entity
+	•	 Campaign type selected correctly
+	•	 Message examples match declared use case
+	•	 Short description matches actual message content
+Mismatch is a guaranteed reject.
+
+🧩 SECTION H — CARRIER RISK CHECK
+Agent evaluates HIGH-RISK flags:
+Automatic Rejection:
+	•	 Third-party debt collector (unless structured properly)
+	•	 Credit repair
+	•	 Loan modification
+	•	 Foreclosure assistance
+	•	 Payday lending
+	•	 Crypto finance
+	•	 Insurance solicitation
+	•	 Any outbound lead gen
+Allowed with Proper Messaging:
+	•	 Existing debt servicing
+	•	 Account notifications
+	•	 Payment reminders
+	•	 Document availability
+
+🧩 SECTION I — FDCPA, TCPA, CTIA LEGAL COMPLIANCE
+Must include:
+	•	 “This is a communication from a debt collector.”
+	•	 No third-party disclosure of debt
+	•	 No sending outside allowed hours (agent notes but carriers do not check)
+	•	 No misleading or deceptive claims
+	•	 No response-required negotiations via SMS
+
+🧩 SECTION J — FINAL APPROVAL SCORE (Agent Output)
+The agent will output:
+Status:
+	•	APPROVABLE (≥99%)
+	•	REJECTION LIKELY
+Score:
+Calculated by weighting issues in each section.
+Report:
+	•	Pass/Fail on each section
+	•	Exact reasons for likely rejection
+	•	Steps required to fix
+	•	Regulatory citations (FDCPA/TCPA/CTIA)
+	•	Carrier justification patterns seen in prior cases
+
+🧬 Evolution Mechanism (How the Checklist Updates Over Time)
+The compliance agent should update this checklist when:
+	•	 New rejection reasons appear in future Telnyx/TCR feedback
+	•	 New carrier rules are added (e.g., AT&T revisions)
+	•	 CTIA updates guidelines
+	•	 Congress/CFPB updates FDCPA interpretations
+	•	 SMS phishing/abuse patterns cause stricter controls
+	•	 Industry trends indicate risk tightening (e.g., crypto crackdowns)
+	•	 Account-level anomalies appear (e.g., high opt-out rates)
+Each update creates:
+	•	New version number
+	•	Changelog
+	•	New test cases
+
+
+
+I’ll give you something you can implement:
+	•	A clear architecture
+	•	A data model for campaign submissions
+	•	A rule engine design (with severity, scoring, and versioning)
+	•	Example code skeleton (TypeScript/Node) including:
+	•	Rule definitions
+	•	Website scanning hooks
+	•	A runComplianceCheck() you can wire into CCAI
+You can hand this to an engineer and say: “Build this.”
+
+1. High-level architecture
+Think of the “Collections Compliance Agent” as this pipeline:
+	•	Ingest Submission
+	•	Parse your existing campaign submission form (Excel/CSV/API/UI) into a normalized object.
+	•	Enrich Context
+	•	Crawl brand website(s) and referenced URLs (login portal, privacy, terms).
+	•	Extract text content for analysis.
+	•	(Optional later) Query your own “known rejections” DB for patterns.
+	•	Run Rules Engine
+	•	Deterministic checks (required fields, URLs, FDCPA language, STOP/HELP, etc.).
+	•	Content checks on website + templates (third-party collector language, loan solicitations, etc.).
+	•	Risk classification & score.
+	•	Produce Report
+	•	Overall status: APPROVABLE / REJECTION LIKELY
+	•	0–100 score
+	•	Issues grouped by section (Brand, Website, Opt-in, Templates, etc.)
+	•	“Fix this to pass” recommendations.
+	•	Version & Learn
+	•	Each run tagged with a rulesVersion.
+	•	When you get Telnyx rejection/approval results, you update rules and bump version.
+
+2. Core data model (for the engine)
+Example in TypeScript, but same idea in any language:
+// Core submission object normalized from your form
+export interface CampaignSubmission {
+  brandName: string;
+  brandWebsite: string;
+  supportEmail?: string;
+  supportPhone?: string;
+  privacyUrl?: string;
+  termsUrl?: string;
+
+  useCase: string;                  // e.g. "Debt Servicing / Account Notifications"
+  campaignDescription: string;
+  vertical: string;                 // e.g. "Financial Services - Collections"
+
+  optInDescription: string;         // narrative
+  optInChannels: ("web" | "phone" | "email" | "sms")[];
+
+  sampleMessages: string[];
+  helpResponse?: string;
+  stopResponse?: string;
+
+  // Optional extra URLs (customer portal, forms, etc.)
+  additionalUrls?: string[];
+}
+Website scan result
+export interface WebsiteScan {
+  url: string;
+  status: number;
+  textContent: string;        // normalized visible text
+  metaDescription?: string;
+  headings?: string[];
+}
+Rule and result types
+export type RuleSeverity = "CRITICAL" | "MAJOR" | "MINOR" | "INFO";
+
+export interface RuleResult {
+  ruleId: string;
+  name: string;
+  section: string;       // e.g. "Brand", "Website", "Templates"
+  severity: RuleSeverity;
+  passed: boolean;
+  message: string;       // human-readable explanation
+  details?: any;         // optional extra data
+}
+
+export interface ComplianceReport {
+  rulesVersion: string;
+  overallStatus: "APPROVABLE" | "REJECTION_LIKELY";
+  score: number;         // 0–100
+  results: RuleResult[];
+}
+
+3. Rule engine design
+Rules are just functions over (submission, websiteContext) that return RuleResult.
+export interface RuleContext {
+  submission: CampaignSubmission;
+  websites: WebsiteScan[];
+}
+
+export interface ComplianceRule {
+  id: string;
+  name: string;
+  section: string;
+  severity: RuleSeverity;
+  evaluate(ctx: RuleContext): RuleResult;
+}
+Then a simple engine:
+export class ComplianceEngine {
+  constructor(
+    private rules: ComplianceRule[],
+    private rulesVersion: string = "v1.0"
+  ) {}
+
+  run(ctx: RuleContext): ComplianceReport {
+    const results = this.rules.map(rule => rule.evaluate(ctx));
+
+    // Any failed CRITICAL or MAJOR rule → REJECTION_LIKELY
+    const hasSeriousFailure = results.some(r => !r.passed && (r.severity === "CRITICAL" || r.severity === "MAJOR"));
+
+    // Simple scoring: start from 100 and deduct
+    let score = 100;
+    for (const r of results) {
+      if (!r.passed) {
+        if (r.severity === "CRITICAL") score -= 30;
+        else if (r.severity === "MAJOR") score -= 15;
+        else if (r.severity === "MINOR") score -= 5;
+      }
+    }
+    if (score < 0) score = 0;
+
+    const overallStatus = hasSeriousFailure ? "REJECTION_LIKELY" : "APPROVABLE";
+
+    return {
+      rulesVersion: this.rulesVersion,
+      overallStatus,
+      score,
+      results,
+    };
+  }
+}
+
+4. Example rules based on the checklist
+I’ll show a few key ones; you can expand this list over time.
+4.1 Brand website: third-party debt collector detection (your Telnyx failure)
+const THIRD_PARTY_PATTERNS = [
+  /third[-\s]?party debt collector/i,
+  /we collect debts on behalf of/i,
+  /collection agency/i,
+  /debt collection agency/i
+];
+
+export const WebsiteThirdPartyDebtRule: ComplianceRule = {
+  id: "A1-THIRDPARTY-DEBT",
+  name: "Website references third-party debt collection (high-risk)",
+  section: "Brand",
+  severity: "CRITICAL",
+  evaluate(ctx: RuleContext): RuleResult {
+    const allText = ctx.websites.map(w => w.textContent).join("\n").toLowerCase();
+
+    const match = THIRD_PARTY_PATTERNS.find(p => p.test(allText));
+
+    const passed = !match;
+    return {
+      ruleId: "A1-THIRDPARTY-DEBT",
+      name: "Website references third-party debt collection (high-risk)",
+      section: "Brand",
+      severity: "CRITICAL",
+      passed,
+      message: passed
+        ? "No explicit third-party debt collection language detected on website."
+        : "Website explicitly references third-party debt collection, which carriers classify as high-risk financial services and will be rejected unless handled via special flow.",
+      details: match?.toString(),
+    };
+  },
+};
+4.2 Required URLs present
+export const RequiredUrlsRule: ComplianceRule = {
+  id: "E1-REQUIRED-URLS",
+  name: "Privacy & Terms URLs present",
+  section: "Legal",
+  severity: "MAJOR",
+  evaluate({ submission }: RuleContext): RuleResult {
+    const missing: string[] = [];
+    if (!submission.privacyUrl) missing.push("privacyUrl");
+    if (!submission.termsUrl) missing.push("termsUrl");
+
+    const passed = missing.length === 0;
+
+    return {
+      ruleId: "E1-REQUIRED-URLS",
+      name: "Privacy & Terms URLs present",
+      section: "Legal",
+      severity: "MAJOR",
+      passed,
+      message: passed
+        ? "Privacy and Terms URLs are provided."
+        : `Missing required URL(s): ${missing.join(", ")}.`,
+      details: { missing },
+    };
+  },
+};
+4.3 Brand in every sample message
+export const BrandInMessagesRule: ComplianceRule = {
+  id: "C1-BRAND-IN-MESSAGES",
+  name: "Brand name appears in every sample message",
+  section: "Templates",
+  severity: "MAJOR",
+  evaluate({ submission }: RuleContext): RuleResult {
+    const { brandName, sampleMessages } = submission;
+
+    const failingIndices: number[] = [];
+    sampleMessages.forEach((msg, i) => {
+      if (!msg.toLowerCase().includes(brandName.toLowerCase())) {
+        failingIndices.push(i);
+      }
+    });
+
+    const passed = failingIndices.length === 0;
+
+    return {
+      ruleId: "C1-BRAND-IN-MESSAGES",
+      name: "Brand name appears in every sample message",
+      section: "Templates",
+      severity: "MAJOR",
+      passed,
+      message: passed
+        ? "Brand name is present in all sample messages."
+        : `Brand name is missing from sample messages at indices: ${failingIndices.join(", ")}.`,
+      details: { failingIndices },
+    };
+  },
+};
+4.4 FDCPA disclosure present
+export const FdcpaDisclosureRule: ComplianceRule = {
+  id: "I1-FDCPA-DISCLOSURE",
+  name: "FDCPA disclosure present in sample messages",
+  section: "Legal",
+  severity: "MAJOR",
+  evaluate({ submission }: RuleContext): RuleResult {
+    const phrase = "this is a communication from a debt collector";
+    const hasDisclosure = submission.sampleMessages.some(m =>
+      m.toLowerCase().includes(phrase)
+    );
+
+    return {
+      ruleId: "I1-FDCPA-DISCLOSURE",
+      name: "FDCPA disclosure present in sample messages",
+      section: "Legal",
+      severity: "MAJOR",
+      passed: hasDisclosure,
+      message: hasDisclosure
+        ? "At least one sample message includes FDCPA disclosure."
+        : "FDCPA disclosure ('This is a communication from a debt collector.') is missing from all sample messages and will likely cause rejection.",
+    };
+  },
+};
+4.5 STOP/HELP in initial message
+export const StopHelpRule: ComplianceRule = {
+  id: "B1-STOP-HELP",
+  name: "STOP and HELP instructions provided",
+  section: "Opt-In",
+  severity: "MAJOR",
+  evaluate({ submission }: RuleContext): RuleResult {
+    const firstMessage = submission.sampleMessages[0] || "";
+    const hasStop = /reply\s+stop/i.test(firstMessage);
+    const hasHelp = /reply\s+help/i.test(firstMessage);
+
+    const passed = hasStop && hasHelp;
+
+    return {
+      ruleId: "B1-STOP-HELP",
+      name: "STOP and HELP instructions provided",
+      section: "Opt-In",
+      severity: "MAJOR",
+      passed,
+      message: passed
+        ? "STOP and HELP instructions are present in the initial sample message."
+        : "Initial message must include 'Reply STOP to opt out' and 'Reply HELP for assistance'.",
+      details: { hasStop, hasHelp },
+    };
+  },
+};
+4.6 Prohibited placeholders
+const DISALLOWED_PLACEHOLDERS = [
+  "{{BrandName}}",
+  "{{LoginURL}}",
+  "{{URL}}",
+  "{{CompanyName}}",
+];
+
+export const DisallowedPlaceholderRule: ComplianceRule = {
+  id: "C2-DISALLOWED-PLACEHOLDERS",
+  name: "Disallowed placeholders in messages",
+  section: "Templates",
+  severity: "MAJOR",
+  evaluate({ submission }: RuleContext): RuleResult {
+    const offending: { index: number; placeholder: string }[] = [];
+
+    submission.sampleMessages.forEach((msg, i) => {
+      DISALLOWED_PLACEHOLDERS.forEach(ph => {
+        if (msg.includes(ph)) offending.push({ index: i, placeholder: ph });
+      });
+    });
+
+    const passed = offending.length === 0;
+
+    return {
+      ruleId: "C2-DISALLOWED-PLACEHOLDERS",
+      name: "Disallowed placeholders in messages",
+      section: "Templates",
+      severity: "MAJOR",
+      passed,
+      message: passed
+        ? "No disallowed placeholders detected in sample messages."
+        : `Disallowed placeholders found: ${offending
+            .map(o => `${o.placeholder} in message[${o.index}]`)
+            .join("; ")}`,
+      details: offending,
+    };
+  },
+};
+
+5. Website scanning layer
+You’ll want a small service to pull and normalize HTML → text:
+import fetch from "node-fetch";
+import { JSDOM } from "jsdom";
+
+export async function scanWebsite(url: string): Promise<WebsiteScan> {
+  const res = await fetch(url);
+  const html = await res.text();
+  const dom = new JSDOM(html);
+  const doc = dom.window.document;
+
+  const textContent = doc.body.textContent || "";
+
+  const headings = Array.from(doc.querySelectorAll("h1, h2, h3")).map(
+    h => h.textContent || ""
+  );
+
+  const metaDesc =
+    doc.querySelector("meta[name='description']")?.getAttribute("content") ||
+    undefined;
+
+  return {
+    url,
+    status: res.status,
+    textContent,
+    metaDescription: metaDesc,
+    headings,
+  };
+}
+Then, before running the engine:
+async function runComplianceCheck(submission: CampaignSubmission): Promise<ComplianceReport> {
+  const urls = [
+    submission.brandWebsite,
+    submission.privacyUrl,
+    submission.termsUrl,
+    ...(submission.additionalUrls || []),
+  ].filter(Boolean) as string[];
+
+  const websites = await Promise.all(urls.map(scanWebsite));
+
+  const engine = new ComplianceEngine(
+    [
+      WebsiteThirdPartyDebtRule,
+      RequiredUrlsRule,
+      BrandInMessagesRule,
+      FdcpaDisclosureRule,
+      StopHelpRule,
+      DisallowedPlaceholderRule,
+      // ...add the rest from the checklist
+    ],
+    "v1.0"
+  );
+
+  return engine.run({ submission, websites });
+}
+
+6. How this evolves as you learn
+Every time:
+	•	A campaign is rejected, you:
+	•	Store Telnyx/TCR reason.
+	•	Add or adjust rules to catch it earlier.
+	•	Bump rulesVersion to v1.1, v1.2, etc.
+	•	A campaign is approved, you:
+	•	Optionally log the report and validate that nothing was “overly strict.”
+	•	Adjust severity or thresholds if you find false positives.
+This gives you:
+	•	A living, versioned compliance engine.
+	•	Traceability: “This campaign was evaluated under ruleset v1.3.”
+	•	A very nice story for clients and carriers: “We pre-validate all campaigns against a codified compliance framework.”
+
+If you’d like, next step I can:
+	•	Turn this into a full JSON rule configuration so non-devs can manage rules.
+	•	Or adapt this into Python if that’s a better fit for your stack.
+	•	Or map it directly onto your existing Excel submission columns so it’s plug-and-play with your current form.
+

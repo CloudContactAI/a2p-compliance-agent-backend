@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: a2p-config
+data:
+  AWS_DEFAULT_REGION: "us-east-1"
+  AWS_PROFILE: "ccai"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: a2p-compliance-agent
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: a2p-compliance-agent
+  template:
+    metadata:
+      labels:
+        app: a2p-compliance-agent
+    spec:
+      containers:
+      - name: a2p-compliance-agent
+        image: your-account.dkr.ecr.us-east-1.amazonaws.com/a2p-compliance-agent:latest
+        ports:
+        - containerPort: 5001
+        envFrom:
+        - configMapRef:
+            name: a2p-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: a2p-service
+spec:
+  selector:
+    app: a2p-compliance-agent
+  ports:
+  - port: 80
+    targetPort: 5001
+  type: LoadBalancer
