@@ -13,8 +13,14 @@ from botocore.exceptions import ClientError
 def load_secrets():
     """Load secrets from AWS Secrets Manager or fallback to .env file"""
     try:
-        session = boto3.Session(profile_name='ccai')
-        client = session.client('secretsmanager', region_name='us-east-1')
+        # Use IAM role when running in ECS, profile when running locally
+        if os.getenv('AWS_EXECUTION_ENV'):
+            # Running in ECS - use IAM role
+            client = boto3.client('secretsmanager', region_name='us-east-1')
+        else:
+            # Running locally - use profile
+            session = boto3.Session(profile_name='ccai')
+            client = session.client('secretsmanager', region_name='us-east-1')
         
         response = client.get_secret_value(SecretId='a2p-compliance-env')
         secrets = json.loads(response['SecretString'])

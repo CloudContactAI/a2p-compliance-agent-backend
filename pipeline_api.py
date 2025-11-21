@@ -171,6 +171,11 @@ def check_email_domain_match(email, website):
     except:
         return False
 
+@app.route('/health', methods=['GET'])
+def health_check():
+    """Health check endpoint for load balancer"""
+    return jsonify({"status": "healthy", "service": "a2p-compliance-agent"})
+
 @app.route('/api/health', methods=['GET'])
 def health():
     return jsonify({"status": "healthy", "service": "a2p-compliance-pipeline"})

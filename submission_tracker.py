@@ -19,8 +19,15 @@ class SubmissionTracker:
         self.enabled = False
         
         try:
-            session = boto3.Session(profile_name='ccai')
-            self.dynamodb = session.resource('dynamodb', region_name='us-east-1')
+            # Use IAM role when running in ECS, profile when running locally
+            if os.getenv('AWS_EXECUTION_ENV'):
+                # Running in ECS - use IAM role
+                self.dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
+            else:
+                # Running locally - use profile
+                session = boto3.Session(profile_name='ccai')
+                self.dynamodb = session.resource('dynamodb', region_name='us-east-1')
+                
             self.table = self.dynamodb.Table(table_name)
             # Test connection
             self.table.table_status

@@ -1,0 +1,17 @@
+# Copy this file to terraform.tfvars and fill in your values
+
+aws_region  = "us-east-1"
+aws_profile = "ccai"
+
+# GitHub Configuration
+github_owner  = "your-github-username"
+github_repo   = "a2p-compliance-agent-backend"
+github_branch = "main"
+github_token  = "your-github-personal-access-token"
+
+# Network Configuration (get these from your AWS console)
+vpc_id = "vpc-xxxxxxxxx"
+subnet_ids = [
+  "subnet-xxxxxxxxx",
+  "subnet-yyyyyyyyy"
+]

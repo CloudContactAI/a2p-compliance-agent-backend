@@ -21,8 +21,14 @@ class CloudWatchLogger:
             import boto3
             from watchtower import CloudWatchLogsHandler
             
-            session = boto3.Session(profile_name='ccai')
-            cloudwatch_client = session.client('logs', region_name='us-east-1')
+            # Use IAM role when running in ECS, profile when running locally
+            if os.getenv('AWS_EXECUTION_ENV'):
+                # Running in ECS - use IAM role
+                cloudwatch_client = boto3.client('logs', region_name='us-east-1')
+            else:
+                # Running locally - use profile
+                session = boto3.Session(profile_name='ccai')
+                cloudwatch_client = session.client('logs', region_name='us-east-1')
             
             handler = CloudWatchLogsHandler(
                 log_group=log_group,

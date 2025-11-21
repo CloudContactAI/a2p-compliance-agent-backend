@@ -37,3 +37,6 @@ terraform/.terraform.lock.hcl
 # Temporary files
 *.tmp
 *.temp
+terraform/terraform.tfvars
+terraform/*.tfstate*
+terraform/.terraform/
