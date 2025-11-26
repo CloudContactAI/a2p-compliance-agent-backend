@@ -35,7 +35,18 @@ from datetime import datetime
 from urllib.parse import urlparse
 
 app = Flask(__name__)
-CORS(app, supports_credentials=True)  # Enable CORS with credentials support
+# Enable CORS for frontend domains
+CORS(app, 
+     origins=[
+         "https://agent.cloudcontactai.com",
+         "https://main.d28k46xdno1z6x.amplifyapp.com",
+         "https://d28k46xdno1z6x.amplifyapp.com",
+         "http://localhost:*",
+         "http://127.0.0.1:*"
+     ],
+     supports_credentials=True,
+     allow_headers=["Content-Type", "Authorization"],
+     methods=["GET", "POST", "OPTIONS"])
 pipeline = A2PCompliancePipeline()
 data_agent = A2PDataCollectionAgent()
 compliance_strand = A2PComplianceStrand()
