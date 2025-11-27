@@ -29,6 +29,7 @@ from enhanced_compliance_strand import A2PComplianceStrand
 from submission_tracker import SubmissionTracker
 from cloudwatch_logger import CloudWatchLogger
 from regulatory_verifier import RegulatoryVerifier
+from readme_integration import ReadMeIntegration
 import os
 import re
 from datetime import datetime
@@ -53,6 +54,7 @@ compliance_strand = A2PComplianceStrand()
 tracker = SubmissionTracker()
 logger = CloudWatchLogger()
 regulatory_verifier = RegulatoryVerifier()
+readme = ReadMeIntegration()
 
 def get_client_ip():
     """Get client IP address from request"""
@@ -450,6 +452,33 @@ def get_fallback_response(user_message):
         return "I'm an A2P 10DLC compliance expert. I analyze messaging campaigns for regulatory compliance. Type 'start' to begin."
     else:
         return "I can help with A2P compliance questions and analyze your messaging setup. Type 'start' to begin your compliance review."
+
+@app.route('/api/developer-help', methods=['POST'])
+def developer_help():
+    """Answer developer documentation questions using ReadMe"""
+    try:
+        data = request.get_json()
+        query = data.get('query', '')
+        
+        if not query:
+            return jsonify({"error": "Query is required"}), 400
+        
+        # Search ReadMe documentation
+        results = readme.search_docs(query)
+        answer = readme.format_answer(results, query)
+        
+        return jsonify({
+            "answer": answer,
+            "query": query,
+            "results_count": len(results)
+        })
+        
+    except Exception as e:
+        print(f"Developer help error: {e}")
+        return jsonify({
+            "answer": "I'm having trouble accessing the documentation right now. Please visit https://developer.cloudcontactai.com directly.",
+            "error": str(e)
+        }), 200
 
 @app.route('/api/user/history', methods=['GET'])
 def get_user_history():
