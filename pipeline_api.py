@@ -453,9 +453,12 @@ def get_fallback_response(user_message):
     else:
         return "I can help with A2P compliance questions and analyze your messaging setup. Type 'start' to begin your compliance review."
 
-@app.route('/api/developer-help', methods=['POST'])
+@app.route('/api/developer-help', methods=['POST', 'OPTIONS'])
 def developer_help():
     """Answer developer documentation questions using ReadMe"""
+    if request.method == 'OPTIONS':
+        return '', 204
+    
     try:
         data = request.get_json()
         query = data.get('query', '')
