@@ -166,7 +166,7 @@ class A2PDataCollectionAgent:
             (r'data brokerage', 'data brokerage services'),
             (r'debt collection agency', 'debt collection agency'),
             (r'collection services', 'collection services'),
-            (r'crypto', 'cryptocurrency content'),
+            (r'\bcrypto\b(?!graphic)', 'cryptocurrency content'),
             (r'credit repair', 'credit repair services')
         ]
         

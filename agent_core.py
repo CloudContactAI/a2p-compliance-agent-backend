@@ -39,7 +39,7 @@ class CCaiComplianceAgent:
             r'personal loan solicitation',
             r'lead generation',
             r'data brokerage',
-            r'crypto',
+            r'\bcrypto\b(?!graphic)',
             r'credit repair'
         ]
         
