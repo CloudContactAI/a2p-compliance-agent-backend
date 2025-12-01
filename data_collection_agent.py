@@ -165,7 +165,9 @@ class A2PDataCollectionAgent:
             (r'lead generation', 'lead generation services'),
             (r'data brokerage', 'data brokerage services'),
             (r'debt collection agency', 'debt collection agency'),
-            (r'collection services', 'collection services')
+            (r'collection services', 'collection services'),
+            (r'crypto', 'cryptocurrency content'),
+            (r'credit repair', 'credit repair services')
         ]
         
         # Check for auto-fail triggers with exact match details
