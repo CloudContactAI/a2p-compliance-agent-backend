@@ -5,6 +5,7 @@ Copyright (c) 2024 CloudContactAI, LLC. All rights reserved.
 DynamoDB-based submission tracking for A2P compliance sessions.
 Stores and retrieves compliance analysis results and submission history.
 """
+import os
 import boto3
 import json
 import hashlib
