@@ -78,8 +78,11 @@ class A2PDataCollectionAgent:
             # Extract text content with section mapping
             sections = {}
             
-            # Get page title
+            # Get page title and meta description
             title = soup.title.string if soup.title else "Untitled"
+            meta_desc = soup.find('meta', attrs={'name': 'description'})
+            if meta_desc and meta_desc.get('content'):
+                sections['Meta Description'] = meta_desc.get('content')
             
             # Extract headings and their content
             for heading in soup.find_all(['h1', 'h2', 'h3', 'h4']):
@@ -95,15 +98,15 @@ class A2PDataCollectionAgent:
                     
                     sections[heading_text] = ' '.join(content_parts)
             
-            # Get main content areas
-            main_content = soup.find('main') or soup.find('body')
-            if main_content:
-                for script in main_content(["script", "style"]):
+            # Get ALL visible text from body (removes scripts/styles but keeps everything else)
+            body = soup.find('body')
+            if body:
+                for script in body(["script", "style", "noscript"]):
                     script.decompose()
-                sections['Main Content'] = main_content.get_text()
+                sections['Full Body Text'] = body.get_text(separator=' ', strip=True)
             
-            # Clean up text content
-            full_text = ' '.join([content for content in sections.values()])
+            # Clean up text content - combine all sections
+            full_text = ' '.join([str(content) for content in sections.values()])
             clean_text = ' '.join(full_text.split())
             
             # Find privacy and terms links
@@ -267,6 +270,76 @@ class A2PDataCollectionAgent:
             'total_violations': len(violation_locations)
         }
     
+    def verify_phone_number(self, phone: str) -> Dict:
+        """Verify phone number format is valid"""
+        if not phone:
+            return {'valid': False, 'error': 'No phone number provided'}
+        
+        # Remove common formatting characters
+        cleaned = re.sub(r'[\s\-\(\)\.]', '', phone)
+        
+        # Valid US area codes (NPA - Numbering Plan Area)
+        # Area codes cannot start with 0 or 1, and second digit cannot be 9
+        valid_area_codes = set()
+        for first in range(2, 10):  # 2-9
+            for second in range(0, 9):  # 0-8 (not 9)
+                for third in range(0, 10):  # 0-9
+                    valid_area_codes.add(f"{first}{second}{third}")
+        
+        # Check if it's a valid US/international format
+        if re.match(r'^\+?1?(\d{10})$', cleaned):
+            # Extract the 10-digit number
+            match = re.search(r'(\d{10})$', cleaned)
+            if match:
+                number = match.group(1)
+                area_code = number[:3]
+                
+                # Check if area code is valid
+                if area_code not in valid_area_codes:
+                    return {
+                        'valid': False,
+                        'phone': phone,
+                        'error': f'Invalid US area code: {area_code}'
+                    }
+                
+                return {'valid': True, 'phone': phone, 'format': 'US', 'area_code': area_code}
+        elif re.match(r'^\+\d{10,15}$', cleaned):
+            return {'valid': True, 'phone': phone, 'format': 'International'}
+        
+        return {
+            'valid': False,
+            'phone': phone,
+            'error': 'Invalid phone format (expected 10-digit US or international with +)'
+        }
+    
+    def verify_email_domain(self, email: str) -> Dict:
+        """Verify email domain has a working website"""
+        if not email or '@' not in email:
+            return {'valid': False, 'error': 'Invalid email format'}
+        
+        domain = email.split('@')[1]
+        
+        # Try both https and http
+        for protocol in ['https://', 'http://']:
+            try:
+                url = f"{protocol}{domain}"
+                response = self.session.get(url, timeout=5, allow_redirects=True)
+                if response.status_code == 200:
+                    return {
+                        'valid': True,
+                        'domain': domain,
+                        'url': url,
+                        'status_code': response.status_code
+                    }
+            except Exception as e:
+                continue
+        
+        return {
+            'valid': False,
+            'domain': domain,
+            'error': f'Domain {domain} does not return 200 status'
+        }
+    
     def verify_address_in_content(self, address: str, website_data: Dict, policy_data: Dict) -> bool:
         """Verify address appears in website or policy content"""
         if not address:
@@ -306,6 +379,10 @@ class A2PDataCollectionAgent:
             website_url = collected_data.get('brand_website', '')
             if not website_url:
                 raise ValueError("No brand website provided")
+            
+            # Add protocol if missing
+            if not website_url.startswith(('http://', 'https://')):
+                website_url = 'https://' + website_url
                 
             print(f"Scraping main website: {website_url}")
             website_data = self.scrape_website(website_url)
@@ -345,9 +422,57 @@ class A2PDataCollectionAgent:
                     print(f"Error scraping terms page: {e}")
                     policy_data['terms'] = {'error': str(e)}
             
-            # Analyze compliance
+            # Analyze compliance on main website
             print("Analyzing website compliance...")
             compliance_analysis = self.analyze_website_compliance(website_data)
+            
+            # Also analyze privacy and terms pages
+            if privacy_url and 'privacy' in policy_data and not policy_data['privacy'].get('error'):
+                print("Analyzing privacy policy...")
+                privacy_analysis = self.analyze_website_compliance(policy_data['privacy'])
+                compliance_analysis['debt_matches_found'] += privacy_analysis['debt_matches_found']
+                compliance_analysis['marketing_matches_found'] += privacy_analysis['marketing_matches_found']
+                compliance_analysis['total_violations'] += privacy_analysis['total_violations']
+                compliance_analysis['compliance_issues'].extend(privacy_analysis['compliance_issues'])
+                compliance_analysis['violation_locations'].extend(privacy_analysis['violation_locations'])
+            
+            if terms_url and 'terms' in policy_data and not policy_data['terms'].get('error'):
+                print("Analyzing terms & conditions...")
+                terms_analysis = self.analyze_website_compliance(policy_data['terms'])
+                compliance_analysis['debt_matches_found'] += terms_analysis['debt_matches_found']
+                compliance_analysis['marketing_matches_found'] += terms_analysis['marketing_matches_found']
+                compliance_analysis['total_violations'] += terms_analysis['total_violations']
+                compliance_analysis['compliance_issues'].extend(terms_analysis['compliance_issues'])
+                compliance_analysis['violation_locations'].extend(terms_analysis['violation_locations'])
+            
+            # Update risk level based on total violations
+            if compliance_analysis['total_violations'] > 0:
+                compliance_analysis['risk_level'] = 'HIGH'
+            
+            # Verify phone number format
+            support_phone = collected_data.get('support_phone', '')
+            if support_phone:
+                print(f"Verifying phone number: {support_phone}")
+                phone_verification = self.verify_phone_number(support_phone)
+                compliance_analysis['phone_verified'] = phone_verification['valid']
+                if not phone_verification['valid']:
+                    compliance_analysis['compliance_issues'].append(
+                        f"Phone number validation failed: {phone_verification.get('error', 'Invalid format')}"
+                    )
+                    compliance_analysis['total_violations'] += 1
+            
+            # Verify email domain
+            support_email = collected_data.get('support_email', '')
+            if support_email:
+                print(f"Verifying email domain: {support_email}")
+                email_verification = self.verify_email_domain(support_email)
+                compliance_analysis['email_domain_verified'] = email_verification['valid']
+                if not email_verification['valid']:
+                    compliance_analysis['compliance_issues'].append(
+                        f"Email domain verification failed: {email_verification.get('error', 'Unknown error')}"
+                    )
+                    compliance_analysis['total_violations'] += 1
+                    compliance_analysis['risk_level'] = 'HIGH'
             
             # Verify address appears on website/policies
             address = collected_data.get('street_address', '')

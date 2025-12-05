@@ -99,6 +99,17 @@ class CCaiComplianceAgent:
         
         website_content = data.get("website_content", "").lower()
         
+        # Check phone number validity
+        compliance_analysis = data.get("compliance_analysis", {})
+        if not compliance_analysis.get("phone_verified", True):
+            violations.append("A0: Support phone number format is invalid")
+            penalty += 5
+        
+        # Check email domain validity
+        if not compliance_analysis.get("email_domain_verified", True):
+            violations.append("A0: Support email domain does not have a working website")
+            penalty += 10
+        
         # Check for auto-fail triggers
         for pattern in self.third_party_patterns:
             if re.search(pattern, website_content, re.IGNORECASE):

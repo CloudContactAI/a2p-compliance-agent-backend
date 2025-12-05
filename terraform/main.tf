@@ -137,6 +137,16 @@ resource "aws_ecs_task_definition" "a2p_task" {
           protocol      = "tcp"
         }
       ]
+      environment = [
+        {
+          name  = "ADMIN_USER"
+          value = "Admin"
+        },
+        {
+          name  = "ADMIN_PASSWORD"
+          value = "Maws@1234"
+        }
+      ]
       logConfiguration = {
         logDriver = "awslogs"
         options = {
@@ -154,7 +164,7 @@ resource "aws_ecs_service" "a2p_service" {
   name            = "a2p-compliance-service"
   cluster         = aws_ecs_cluster.a2p_cluster.id
   task_definition = aws_ecs_task_definition.a2p_task.arn
-  desired_count   = 2
+  desired_count   = 1
   launch_type     = "FARGATE"
 
   network_configuration {

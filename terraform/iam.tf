@@ -40,6 +40,13 @@ resource "aws_iam_role_policy" "codebuild_policy" {
           "s3:PutObject"
         ]
         Resource = "*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "ecr:GetAuthorizationToken"
+        ]
+        Resource = "*"
       }
     ]
   })
@@ -148,12 +155,20 @@ resource "aws_iam_role_policy" "ecs_task_policy" {
           "dynamodb:Query",
           "dynamodb:UpdateItem",
           "dynamodb:DeleteItem",
+          "dynamodb:DescribeTable",
           "secretsmanager:GetSecretValue",
           "logs:CreateLogGroup",
           "logs:CreateLogStream",
           "logs:PutLogEvents"
         ]
         Resource = "*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "secretsmanager:GetSecretValue"
+        ]
+        Resource = "arn:aws:secretsmanager:us-east-1:*:secret:a2p-compliance-env-*"
       }
     ]
   })

@@ -36,18 +36,24 @@ from datetime import datetime
 from urllib.parse import urlparse
 
 app = Flask(__name__)
+app.secret_key = os.getenv('ADMIN_PASSWORD', 'fallback-secret-key')
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+
 # Enable CORS for frontend domains
 CORS(app, 
      origins=[
          "https://agent.cloudcontactai.com",
          "https://main.d28k46xdno1z6x.amplifyapp.com",
          "https://d28k46xdno1z6x.amplifyapp.com",
-         "http://localhost:*",
-         "http://127.0.0.1:*"
+         "http://localhost:3000",
+         "http://localhost:5002",
+         "http://127.0.0.1:3000",
+         "http://127.0.0.1:5002"
      ],
      supports_credentials=True,
      allow_headers=["Content-Type", "Authorization"],
-     methods=["GET", "POST", "OPTIONS"])
+     methods=["GET", "POST", "DELETE", "OPTIONS"])
 pipeline = A2PCompliancePipeline()
 data_agent = A2PDataCollectionAgent()
 compliance_strand = A2PComplianceStrand()
@@ -275,6 +281,10 @@ def analyze_submission():
         print("Running compliance check...")
         try:
             compliance_result = pipeline.compliance_agent.process_communication(submission_package)
+            
+            # Add website compliance analysis to result
+            if 'compliance_analysis' in submission_package:
+                compliance_result['compliance_analysis'] = submission_package['compliance_analysis']
             
             # Run business verification
             print("Running regulatory verification...")
@@ -509,7 +519,6 @@ def get_user_stats():
         return jsonify({"error": str(e)}), 500
 
 # Admin API endpoints
-app.secret_key = os.getenv('ADMIN_PASSWORD', 'fallback-secret-key')
 
 @app.route('/admin/login', methods=['POST', 'OPTIONS'])
 def admin_login():
@@ -523,8 +532,10 @@ def admin_login():
         password = data.get('password')
         
         if username == os.getenv('ADMIN_USER') and password == os.getenv('ADMIN_PASSWORD'):
-            session['admin_logged_in'] = True
-            return jsonify({"success": True})
+            # Generate simple token
+            import hashlib
+            token = hashlib.sha256(f"{username}:{password}:{app.secret_key}".encode()).hexdigest()
+            return jsonify({"success": True, "token": token})
         
         return jsonify({"success": False, "error": "Invalid credentials"}), 401
     except Exception as e:
@@ -533,14 +544,80 @@ def admin_login():
 @app.route('/admin/submissions', methods=['GET'])
 def admin_get_submissions():
     """Get all submissions for admin"""
-    if 'admin_logged_in' not in session:
-        return jsonify({"error": "Not authenticated"}), 401
+    # Check for token in Authorization header
+    auth_header = request.headers.get('Authorization')
+    if auth_header and auth_header.startswith('Bearer '):
+        token = auth_header.split(' ')[1]
+        # Verify token
+        import hashlib
+        expected_token = hashlib.sha256(
+            f"{os.getenv('ADMIN_USER')}:{os.getenv('ADMIN_PASSWORD')}:{app.secret_key}".encode()
+        ).hexdigest()
+        if token == expected_token:
+            try:
+                submissions = tracker.get_all_submissions()
+                return jsonify({"submissions": submissions})
+            except Exception as e:
+                return jsonify({"error": str(e)}), 500
     
-    try:
-        submissions = tracker.get_all_submissions()
-        return jsonify({"submissions": submissions})
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    return jsonify({"error": "Not authenticated"}), 401
+
+@app.route('/admin/generate-clean-site/<submission_id>', methods=['POST'])
+def admin_generate_clean_site(submission_id):
+    """Generate cleaned website without debt content"""
+    auth_header = request.headers.get('Authorization')
+    if auth_header and auth_header.startswith('Bearer '):
+        token = auth_header.split(' ')[1]
+        import hashlib
+        expected_token = hashlib.sha256(
+            f"{os.getenv('ADMIN_USER')}:{os.getenv('ADMIN_PASSWORD')}:{app.secret_key}".encode()
+        ).hexdigest()
+        if token == expected_token:
+            try:
+                # Check if site already generated
+                submission = tracker.get_submission_by_id(submission_id)
+                if submission and submission.get('generated_site_url'):
+                    return jsonify({
+                        "success": True, 
+                        "url": submission['generated_site_url'],
+                        "message": "Site already generated"
+                    })
+                
+                from site_generator import CleanSiteGenerator
+                generator = CleanSiteGenerator()
+                url = generator.generate_clean_site(submission_id, tracker)
+                
+                # Save the URL to DynamoDB
+                tracker.update_generated_site_url(submission_id, url)
+                
+                return jsonify({"success": True, "url": url})
+            except Exception as e:
+                import traceback
+                traceback.print_exc()
+                return jsonify({"error": str(e)}), 500
+    
+    return jsonify({"error": "Not authenticated"}), 401
+
+@app.route('/admin/submissions/<submission_id>', methods=['DELETE'])
+def admin_delete_submission(submission_id):
+    """Delete a submission"""
+    # Check for token in Authorization header
+    auth_header = request.headers.get('Authorization')
+    if auth_header and auth_header.startswith('Bearer '):
+        token = auth_header.split(' ')[1]
+        # Verify token
+        import hashlib
+        expected_token = hashlib.sha256(
+            f"{os.getenv('ADMIN_USER')}:{os.getenv('ADMIN_PASSWORD')}:{app.secret_key}".encode()
+        ).hexdigest()
+        if token == expected_token:
+            try:
+                tracker.delete_submission(submission_id)
+                return jsonify({"success": True})
+            except Exception as e:
+                return jsonify({"error": str(e)}), 500
+    
+    return jsonify({"error": "Not authenticated"}), 401
 
 @app.route('/admin/logout', methods=['POST'])
 def admin_logout():

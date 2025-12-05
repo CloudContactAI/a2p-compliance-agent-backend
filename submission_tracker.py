@@ -13,7 +13,13 @@ from datetime import datetime
 from typing import Dict, Any, List, Optional
 
 class SubmissionTracker:
-    def __init__(self, table_name='a2p-submissions'):
+    def __init__(self, table_name=None):
+        # Use different table for localhost vs production
+        if table_name is None:
+            # Check if running in ECS (production)
+            is_production = os.getenv('AWS_EXECUTION_ENV', '').startswith('AWS_ECS')
+            table_name = 'a2p-submissions' if is_production else 'a2p-submissions-dev'
+        
         self.table_name = table_name
         self.dynamodb = None
         self.table = None
@@ -21,7 +27,8 @@ class SubmissionTracker:
         
         try:
             # Use IAM role when running in ECS, profile when running locally
-            if os.getenv('AWS_EXECUTION_ENV'):
+            is_production = os.getenv('AWS_EXECUTION_ENV', '').startswith('AWS_ECS')
+            if is_production:
                 # Running in ECS - use IAM role
                 self.dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
             else:
@@ -29,11 +36,11 @@ class SubmissionTracker:
                 session = boto3.Session(profile_name='ccai')
                 self.dynamodb = session.resource('dynamodb', region_name='us-east-1')
                 
-            self.table = self.dynamodb.Table(table_name)
+            self.table = self.dynamodb.Table(self.table_name)
             # Test connection
             self.table.table_status
             self.enabled = True
-            print("✅ DynamoDB connected successfully")
+            print(f"✅ DynamoDB connected successfully to {self.table_name}")
         except Exception as e:
             print(f"⚠️  DynamoDB not available: {e}")
             print("📝 Running in local mode - submissions won't be stored")
@@ -72,6 +79,7 @@ class SubmissionTracker:
                 'recommendations_count': len(compliance_result.get('recommendations', [])),
                 'submission_data': json.dumps(submission_data),
                 'compliance_result': json.dumps(compliance_result),
+                'generated_site_url': '',  # Will be populated when site is generated
                 # Business verification fields
                 'business_verification_status': business_verification.get('verification_status', 'not_run'),
                 'business_issues_found': business_verification.get('issues_found', False),
@@ -131,6 +139,48 @@ class SubmissionTracker:
         except Exception as e:
             print(f"Error getting all submissions: {e}")
             return []
+    
+    def update_generated_site_url(self, submission_id: str, url: str) -> bool:
+        """Update the generated site URL for a submission"""
+        if not self.enabled:
+            return False
+        
+        try:
+            self.table.update_item(
+                Key={'submission_id': submission_id},
+                UpdateExpression='SET generated_site_url = :url',
+                ExpressionAttributeValues={':url': url}
+            )
+            print(f"✅ Updated generated site URL for {submission_id}")
+            return True
+        except Exception as e:
+            print(f"❌ Failed to update generated site URL: {e}")
+            return False
+    
+    def get_submission_by_id(self, submission_id: str) -> Optional[Dict]:
+        """Get a single submission by ID"""
+        if not self.enabled:
+            return None
+        
+        try:
+            response = self.table.get_item(Key={'submission_id': submission_id})
+            return response.get('Item')
+        except Exception as e:
+            print(f"❌ Failed to get submission: {e}")
+            return None
+    
+    def delete_submission(self, submission_id: str) -> bool:
+        """Delete a submission by ID"""
+        if not self.enabled:
+            return False
+        
+        try:
+            self.table.delete_item(Key={'submission_id': submission_id})
+            print(f"✅ Deleted submission {submission_id}")
+            return True
+        except Exception as e:
+            print(f"❌ Failed to delete submission: {e}")
+            raise e
     
     def get_submission_stats(self, ip_address: str) -> Dict[str, Any]:
         """Get submission statistics for this user"""
