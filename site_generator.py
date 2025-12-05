@@ -38,7 +38,7 @@ class CleanSiteGenerator:
         self.session.headers.update({
             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36'
         })
-        self.s3_client = boto3.Session(profile_name='ccai').client('s3', region_name='us-east-1')
+        self.s3_client = boto3.client('s3', region_name='us-east-1')
         self.bucket_name = 'a2p-compliance-websites'
         self.downloaded_assets = {}
         
